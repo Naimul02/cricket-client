@@ -7,25 +7,19 @@ import { FiArrowRightCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { AiOutlineShopping } from "react-icons/ai";
 import { TbShoppingCartOff } from "react-icons/tb";
-import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../AuthProvider/AuthProvider";
 import { LuLogOut } from "react-icons/lu";
 import toast from "react-hot-toast";
 import { AiOutlineHome } from "react-icons/ai";
 import "../App.css";
+import useCart from "../hooks/useCart/useCart";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
-  // console.log(user);
+  console.log("user" , user);
 
-  const { refetch, data: orders = [] } = useQuery({
-    queryKey: ["orders", user?.email],
-    queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/carts?${user?.email}`);
-      const data = res.json();
-      return data;
-    },
-  });
+  const [orders , refetch] = useCart();
+  console.log("carts : " , orders)
 
   const handleLogOut = () => {
     logout()
@@ -241,7 +235,7 @@ const Navbar = () => {
                   {orders.length ? (
                     orders?.map((order) => (
                       <>
-                        <div className="flex py-3 justify-between">
+                        <div className="flex py-3 justify-between"key={order?._id}>
                           <label
                             htmlFor=""
                             className="text-xl hover:cursor-pointer font-semibold"

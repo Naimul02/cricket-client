@@ -19,15 +19,17 @@ import { Zoom, Navigation, Pagination } from 'swiper/modules';
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic/useAxiosPublic";
 import Loading from "../Loading/Loading";
+import useCart from "../../hooks/useCart/useCart";
 
 const DetailsProducts = () => {
   const { user } = useContext(AuthContext);
   const [value, setValue] = useState(1);
   const axiosPublic = useAxiosPublic();
   const {id} = useParams();
+  const [ , refetch] = useCart();
   console.log("id" , id)
   
-  const {data : data , isLoading , refetch} = useQuery({
+  const {data : data , isLoading } = useQuery({
     queryKey : ['product'],
     queryFn : async()=> {
           const res = await axiosPublic(`/especificproduct/${id}`);
@@ -67,13 +69,13 @@ const DetailsProducts = () => {
 
     // const totalPrice = info.quantity * info.recentPrice;
     // setTotal(totalPrice);
-    console.log("information : ", cartItem);
+    // console.log("information : ", cartItem);
     axiosPublic.post('/carts' , cartItem)
     .then(res => {
       console.log(res.data)
       if(res.data.insertedId){
+        toast.success("add to cart successful");
         refetch()
-        toast.success("add to cart successful")
       }
     })
     .catch((error) => {
