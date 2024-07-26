@@ -1,55 +1,59 @@
-import React from "react";
+import React from 'react';
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { TbShoppingCartOff } from "react-icons/tb";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import Loading from "../Loading/Loading";
+import useAxiosPublic from '../../hooks/useAxiosPublic/useAxiosPublic';
 
-const Checkout = () => {
-  const { user } = useContext(AuthContext);
-  const {
-    refetch,
-    isLoading,
-    data: orders = [],
-  } = useQuery({
-    queryKey: ["orders", user?.email],
-    queryFn: async () => {
-      const res = await fetch(
-        `http://localhost:5000/addtocart?email=${user?.email}`
-      );
-      const data = res.json();
-      return data;
-    },
-  });
+const CheckoutBuy = () => {
+    const {user} = useContext(AuthContext)
+    const {id} = useParams();
+    const axiosPublic = useAxiosPublic();
 
-  const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
-    fetch("http://localhost:5000/confirmorder", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        toast.success("Your order has been confirmed");
-        refetch();
+    const {
+        refetch,
+        isLoading,
+        data: singleOrder = [],
+      } = useQuery({
+        queryKey: ["singleOrder", user?.email],
+        queryFn: async () => {
+          const res = await axiosPublic(`buy/${id}?email=${user?.email}`);
+          console.log("res.data vai re vai" , res.data)
+          
+          return res.data;
+        },
       });
-  };
 
-  if (isLoading) {
-    return <Loading></Loading>;
-  }
 
-  return (
-    <div className="flex lg:flex-row flex-col lg:gap-16 lg:mx-[104px] lg:px-0 px-4 justify-between">
-      {orders.length ? (
+
+    const { register, handleSubmit } = useForm();
+    const onSubmit = (data) => {
+      console.log(data);
+      fetch("http://localhost:5000/confirmorder", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          toast.success("Your order has been confirmed");
+          refetch();
+        });
+    };
+
+    if (isLoading) {
+        return <Loading></Loading>;
+      }
+    return (
+        <div className="flex lg:flex-row flex-col lg:gap-16 lg:mx-[104px] lg:px-0 px-4 justify-between">
+      {singleOrder ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-2xl font-bold mt-10">
             Billing & Shipping
@@ -177,8 +181,8 @@ const Checkout = () => {
           Your Order
         </h1>
         <div>
-          {orders?.length ? (
-            orders.map((order) => (
+          {singleOrder ? 
+            
               <div className=" overflow-x-auto shadow-md sm:rounded-lg lg:mx-[16px]">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                   <tbody>
@@ -186,7 +190,7 @@ const Checkout = () => {
                       <td className="w-[96px] h-[96px] p-4 rounded-full">
                         <div className="lg:w-[64px] w-[64px] lg:h-[64px] h-[64px]">
                           <img
-                            src={order?.image}
+                            src={singleOrder?.img}
                             alt="Apple Watch"
                             className="rounded-full lg:w-[64px] w-[64px] lg:h-[64px] h-[64px] "
                           />
@@ -194,25 +198,25 @@ const Checkout = () => {
                       </td>
 
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white w-[160px] ">
-                        <p className="w-[160px] ">{order?.productName}</p>
+                        <p className="w-[160px] ">{singleOrder?.product_name}</p>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
-                          {order.quantity}
+                          {singleOrder.quantity ? singleOrder.quantity : 1}
                         </div>
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {order?.recentPrice}
+                        {singleOrder?.recent_price}
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {order?.recentPrice * order?.quantity}
+                        {parseInt(singleOrder?.recent_price) * 1}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-            ))
-          ) : (
+            
+           : 
             <div className=" my-20">
               <TbShoppingCartOff className="text-7xl text-green-600  mx-[40%]" />
 
@@ -225,11 +229,11 @@ const Checkout = () => {
                 </button>
               </Link>
             </div>
-          )}
+          }
         </div>
       </div>
     </div>
-  );
+    );
 };
 
-export default Checkout;
+export default CheckoutBuy;

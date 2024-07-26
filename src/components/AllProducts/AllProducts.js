@@ -41,14 +41,14 @@ const AllProducts = () => {
         </h1>
         <div className="navbar-center  flex  lg:mt-3">
           <ul className="menu menu-horizontal lg:px-1 lg:pl-10 pl-[20px]">
-            <label className="bg-purple-600 px-3 rounded lg:h-[45px] h-[40px]">
+            <label className="bg-purple-600 px-3 rounded-l-lg lg:h-[45px] h-[40px]">
               <BiSearch className="text-2xl  lg:h-[45px] h-[40px] text-white" />
             </label>
             <input
               type="text"
               name=""
               id=""
-              className="border-solid border border-slate-500  text-lg text-black font-semibold rounded lg:w-[320px] w-[272px] lg:h-[45px] h-[40px] pl-3 bg-base-100"
+              className="border-solid border border-slate-500  text-lg text-black font-semibold rounded-r-lg lg:w-[320px] w-[272px] lg:h-[45px] h-[40px] pl-3 bg-base-100"
               placeholder="Search Products..."
               onChange={(e) => setQuery(e.target.value)}
             />

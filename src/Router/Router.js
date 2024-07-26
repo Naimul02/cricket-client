@@ -11,6 +11,7 @@ import ShopAllProducts from "../components/ShopAllProducts/ShopAllProducts";
 import Signup from "../components/Signup/Signup";
 import Main from "../layout/Main";
 import PrivateRoute from "./PrivateRoute";
+import CheckoutBuy from "../components/Checkout/CheckoutBuy";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/checkout",
         element: <Checkout></Checkout>,
+      },
+      {
+        path: '/checkoutBuy/:id',
+        element : <CheckoutBuy></CheckoutBuy>
       },
       {
         path: "/login",

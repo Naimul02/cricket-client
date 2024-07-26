@@ -8,7 +8,7 @@ const ShopAllProduct = ({ product }) => {
   return (
     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 lg:mx-0 mx-4">
       <Link
-        to={`/especificproduct/${product._id}`}
+        to={`/especipicproduct/${product?._id}`}
         className="lg:w-[274px] w-full lg:h-[278px] h-[300px]"
       >
         <img
@@ -32,7 +32,7 @@ const ShopAllProduct = ({ product }) => {
           </label>
         </p>
         <Link
-          to={`/especificproduct/${product._id}`}
+          to={`/especipicproduct/${product._id}`}
           className="inline-flex items-center px-3 py-2 text-sm font-medium w-full text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           <div className="ml-[25%]">

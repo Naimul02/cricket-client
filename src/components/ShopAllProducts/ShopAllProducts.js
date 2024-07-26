@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import ShopAllProduct from "./ShopAllProduct";
+import {  useQuery } from "@tanstack/react-query";
+
 import Shipping from "../ShippingHomeSection3/Shipping";
 
 import { useLoaderData } from "react-router-dom";
@@ -15,13 +15,15 @@ import { AiOutlineHome } from "react-icons/ai";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import { BiSearch } from "react-icons/bi";
 import Loading from "../Loading/Loading";
+import ShopProductCard from './ShopProductCard';
+import useAxiosPublic from "../../hooks/useAxiosPublic/useAxiosPublic";
 
 const getFilteredProducts = (query, products) => {
   if (!query) {
     return products;
   }
   return products.filter((product) =>
-    product.product_name.toLowerCase().includes(query)
+    product?.product_name?.toLowerCase().includes(query)
   );
 };
 
@@ -29,29 +31,29 @@ const ShopAllProducts = () => {
   const [query, setQuery] = useState("");
 
   const { user } = useContext(AuthContext);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("allProducts");
+  
   const data = useLoaderData();
 
-  const [products, setProducts] = useState([]);
+  const axiosPublic = useAxiosPublic();
 
-  useEffect(() => {
-    if (category) {
-      fetch(`http://localhost:5000/categoryproducts?category=${category}`)
-        .then((response) => response.json())
-        .then((data) => setProducts(data));
-    } else {
-      fetch("http://localhost:5000/allproducts")
-        .then((response) => response.json())
-        .then((data) => setProducts(data));
-    }
-  });
+  
+  const {data : products = [] , isLoading} = useQuery({
+      queryKey : ['products' , category] , 
+      queryFn : async() => {
+         const res = await axiosPublic(`/categoryproducts?category=${category}`)
+         console.log("products" , products)
+         return res.data
+      }
+  })
+
+  
 
   const filteredItems = getFilteredProducts(query, products);
 
-  const { isLoading } = useQuery({});
-  if (isLoading) {
-    return <Loading></Loading>;
-  }
+    if(isLoading){
+        return <Loading></Loading>
+    }
   return (
     <>
       <div>
@@ -62,7 +64,7 @@ const ShopAllProducts = () => {
         />
       </div>
       <div className="lg:mx-[104px]  lg:flex hidden justify-between  lg:flex-row flex-col ">
-        <h2 className="lg:text-3xl text-lg font-bold mt-6">Products</h2>
+        <h2 className="lg:text-3xl text-lg font-bold mt-6">Products </h2>
         <div className="navbar-center  flex mt-3">
           <ul className="menu menu-horizontal flex ">
             <label className="bg-purple-600 px-3 rounded lg:h-[45px] h-[40px] text-white">
@@ -223,7 +225,7 @@ const ShopAllProducts = () => {
             <div className="lg:grid lg:grid-cols-1 hidden  ">
               <p
                 onClick={() => setCategory("cricket Bats")}
-                className="text-base font-semibold block mb-2 hover:text-orange-600 hover:cursor-pointer"
+                className="text-base font-semibold block mb-2 hover:text-orange-600 hover:cursor-pointer"id="cricketBat"
               >
                 <label className="lg:inline hidden">Cricket</label> Bats
               </p>
@@ -243,7 +245,7 @@ const ShopAllProducts = () => {
               </p>
 
               <p
-                onClick={() => setCategory("cricket kitbags")}
+                onClick={() => setCategory("cricket Kitbags")}
                 className="text-base font-semibold block mb-2 hover:text-orange-600 hover:cursor-pointer"
               >
                 <label className="lg:inline hidden">Cricket</label> Kitbags
@@ -305,17 +307,12 @@ const ShopAllProducts = () => {
             </ul>
           </div>
         </div>
-        <form className="grid lg:grid-cols-3 gap-3 lg:mt-0 mt-4">
-          {filteredItems.length ? (
-            filteredItems.map((product) => (
-              <ShopAllProduct product={product} data={data}></ShopAllProduct>
-            ))
-          ) : (
-            <h1 className="text-3xl   font-semibold">
-              There are no product here.
-            </h1>
-          )}
-        </form>
+
+        {/* shop all products card */}
+        {
+           <ShopProductCard filteredItems={filteredItems} data={data}></ShopProductCard>
+          
+        }
       </div>
       <Shipping></Shipping>
     </>

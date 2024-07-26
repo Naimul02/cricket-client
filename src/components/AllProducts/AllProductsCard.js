@@ -15,11 +15,11 @@ const AllProductsCard = ({ product }) => {
         />
       </Link>
       <div class="p-5">
-        <Link to="">
+       
           <h5 class="mb-2  text-lg font-semibold tracking-tight text-gray-900 dark:text-white">
             {product?.product_name.slice(0, 40)}
           </h5>
-        </Link>
+        
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
           <label className="text-lg font-semibold">
             Price : ৳{product?.recent_price}

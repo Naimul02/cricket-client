@@ -32,7 +32,8 @@ const DetailsProducts = () => {
   const {data : data , isLoading } = useQuery({
     queryKey : ['product'],
     queryFn : async()=> {
-          const res = await axiosPublic(`/especificproduct/${id}`);
+          const res = await axiosPublic(`/especipicproduct/${id}`);
+            console.log("res.data" , res.data)
 
           return res.data
     }
@@ -167,7 +168,7 @@ const DetailsProducts = () => {
               )}
             </div>
             {user ? (
-              <Link to="/checkout">
+              <Link to={`/checkoutBuy/${id}`}>
                 <button className="btn hover:bg-orange-700  lg:w-[440px] w-[335px] bg-orange-600 text-white mt-3 lg:mr-0 mr-4">
                   Buy Now
                 </button>
