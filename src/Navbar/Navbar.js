@@ -234,8 +234,8 @@ const Navbar = () => {
                 <div>
                   {orders.length ? (
                     orders?.map((order) => (
-                      <>
-                        <div className="flex py-3 justify-between"key={order?._id}>
+                      <div key={order?._id}>
+                        <div className="flex py-3 justify-between">
                           <label
                             htmlFor=""
                             className="text-xl hover:cursor-pointer font-semibold"
@@ -260,7 +260,7 @@ const Navbar = () => {
                           />
                         </div>
                         <hr />
-                      </>
+                      </div>
                     ))
                   ) : (
                     <div className=" my-20">
@@ -278,14 +278,14 @@ const Navbar = () => {
                   {/* <h2 className="text-lg font-semibold mb-2">Subtotal : </h2> */}
                   <hr />
                   <Link to="/orders">
-                    <button className="btn bg-black text-white w-full hover:bg-purple-700">
+                    <button className="btn bg-cyan-700 text-white w-full hover:bg-cyan-800">
                       View Cart
                     </button>
                   </Link>
                   {user ? (
                     <Link to="/checkout">
                       {" "}
-                      <button className="btn bg-cyan-700 text-white w-full hover:bg-rose-800 mt-2">
+                      <button className="btn bg-cyan-700 text-white w-full hover:bg-cyan-800 mt-2">
                         Checkout
                       </button>
                     </Link>

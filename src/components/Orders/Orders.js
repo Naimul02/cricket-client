@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 import Loading from "../Loading/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Orders = () => {
   const { user } = useContext(AuthContext);
-  console.log("user : ", user);
+  
+  const axiosSecure  = useAxiosSecure();
   const {
     refetch,
     isLoading,
@@ -15,34 +17,35 @@ const Orders = () => {
   } = useQuery({
     queryKey: ["orders", user?.email],
     queryFn: async () => {
-      const res = await fetch(
-        `http://localhost:5000/addtocart?email=${user?.email}`
-      );
-      const data = res.json();
-      return data;
-    },
+      const res = await axiosSecure.get(`carts?email=${user?.email}`);
+      console.log("carts : " , res.data);
+      return res.data;
+},
   });
 
   const handleDelete = (order) => {
-    fetch(`http://localhost:5000/addtocart?id=${order._id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        toast.success("Your product has been successfully deleted");
-        refetch();
-      });
+      axiosSecure.delete(`addtocart?id=${order._id}`)
+      .then(res => {
+        console.log(res.data);
+        if(res.data.deletedCount > 0){
+          toast.success("Your product has been successfully deleted");
+          refetch();
+
+        }
+      })
   };
+
   if (isLoading) {
     return <Loading></Loading>;
   }
 
+    const sum = orders?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0);
+    
   return (
     <div>
       {orders ? (
         <h1 className="lg:mx-[104px]  mx-4 text-2xl text-green-600 font-semibold mt-3">
-          Your Order
+          Your Cart
         </h1>
       ) : (
         <></>
@@ -50,7 +53,7 @@ const Orders = () => {
       <div className="mt-4">
         {orders.length ? (
           orders.map((order) => (
-            <div className=" overflow-x-auto shadow-md sm:rounded-lg lg:mx-[104px]">
+            <div className=" overflow-x-auto shadow-md sm:rounded-lg lg:mx-[104px]" key={order?.key}>
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <tbody>
                   <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -89,16 +92,25 @@ const Orders = () => {
                       </p>
                     </td>
                   </tr>
+                  
                 </tbody>
               </table>
+                
             </div>
           ))
+
+          
         ) : (
           <h3 className="text-2xl my-10 font-semibold lg:mx-[104px] mx-4 text-green-600">
             You have not ordered any products yet
           </h3>
         )}
       </div>
+
+      <div className="flex justify-end lg:mr-[17%] mt-2">
+     {orders?.length &&  <h2 className="text-lg font-semibold lg:mx-[104px]">Total : {sum}</h2>}
+      </div>
+
       {orders.length ? (
         <div className="flex lg:mx-0 mx-2 lg:flex-row flex-col">
           <Link to="/checkout">

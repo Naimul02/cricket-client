@@ -5,8 +5,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../App.css";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
 const Login = () => {
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser , googleUser } = useContext(AuthContext);
   const { register, handleSubmit } = useForm();
   const location = useLocation();
   console.log("location vai" , location);
@@ -26,6 +27,18 @@ const Login = () => {
         toast.error(error.message);
       });
   };
+  const handleGoogleUser = () => {
+    googleUser()
+    .then((result) => {
+      const user = result.user;
+      console.log(user);
+      toast.success("Login successfully");
+      navigate(location?.state?.from?.pathname ||  "/");
+    })
+    .catch((error) => {
+      toast.error(error.message);
+    });
+  }
   return (
     <div>
       <div className="lg:mx-[104px] mx-4">
@@ -54,6 +67,8 @@ const Login = () => {
               placeholder="Enter Your Password"
             />
           </div>
+
+          
           <Link
             to="/signup"
             className="text-lg font-semibold text-green-600 hover:underline block mt-2"
@@ -61,10 +76,15 @@ const Login = () => {
             Are you new here ? please signup
           </Link>
 
-          <button className="btn bg-green-600 text-white lg:w-[315px] w-full mt-2 hover:bg-purple-700">
+          <div className="max-w-[100px] mx-auto">
+        <FcGoogle className="text-3xl text-center hover:pointer"onClick={handleGoogleUser} />
+        </div>
+
+          <button className="btn bg-green-600 text-white lg:w-[315px] w-full mt-2 hover:bg-green-700">
             Submit
           </button>
         </form>
+       
       </div>
 
       <Shipping></Shipping>

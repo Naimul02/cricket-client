@@ -7,40 +7,45 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import Loading from "../Loading/Loading";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Checkout = () => {
   const { user } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
   const {
+    data: orders = [],
     refetch,
     isLoading,
-    data: orders = [],
   } = useQuery({
     queryKey: ["orders", user?.email],
     queryFn: async () => {
-      const res = await fetch(
-        `http://localhost:5000/addtocart?email=${user?.email}`
-      );
-      const data = res.json();
-      return data;
+      axiosSecure(`/carts?email=${user?.email}`)
+      .then(res => {
+          console.log(res.data);
+          return res.data;
+      })
+      // const res = await fetch(
+      //   `http://localhost:5000/carts?email=${user?.email}`
+      // );
+      // const data = res.json();
+      // return data;
     },
   });
+  const sum = orders?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0)
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
     console.log(data);
-    fetch("http://localhost:5000/confirmorder", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        toast.success("Your order has been confirmed");
+    axiosSecure.post('/confirmorder' , data)
+    .then(res => {
+      console.log(res.data);
+      if(res.data.insertedId){
+
         refetch();
-      });
+        toast.success("Your order has been confirmed");
+      }
+    })
+    
   };
 
   if (isLoading) {
@@ -105,7 +110,7 @@ const Checkout = () => {
             ></textarea>
           </div>
 
-          <button className="btn bg-green-600 text-white w-full hover:bg-red-600 lg:w-[300px]  mt-2">
+          <button className="btn bg-green-600 text-white w-full hover:bg-green-700 lg:w-[300px]  mt-2">
             Place Order
           </button>
         </form>
@@ -164,7 +169,7 @@ const Checkout = () => {
           </div>
 
           <button
-            className="btn bg-green-600 text-white w-full hover:bg-purple-600 lg:w-[300px] mt-2"
+            className="btn bg-green-600 text-white w-full hover:bg-green-700 lg:w-[300px] mt-2"
             disabled
           >
             Place Order
@@ -226,6 +231,10 @@ const Checkout = () => {
               </Link>
             </div>
           )}
+          
+          <div className="flex justify-end mr-[5%] mt-2">
+            <h2 className="text-lg font-semibold">Total : {sum}</h2>
+          </div>
         </div>
       </div>
     </div>

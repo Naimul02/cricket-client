@@ -17,6 +17,7 @@ import { BiSearch } from "react-icons/bi";
 import Loading from "../Loading/Loading";
 import ShopProductCard from './ShopProductCard';
 import useAxiosPublic from "../../hooks/useAxiosPublic/useAxiosPublic";
+import usePagination from "../../hooks/usePagination";
 
 const getFilteredProducts = (query, products) => {
   if (!query) {
@@ -28,28 +29,83 @@ const getFilteredProducts = (query, products) => {
 };
 
 const ShopAllProducts = () => {
+  
   const [query, setQuery] = useState("");
+  
 
   const { user } = useContext(AuthContext);
   const [category, setCategory] = useState("allProducts");
   
   const data = useLoaderData();
 
+
+  
+
   const axiosPublic = useAxiosPublic();
 
+  // pagination
   
-  const {data : products = [] , isLoading} = useQuery({
-      queryKey : ['products' , category] , 
-      queryFn : async() => {
-         const res = await axiosPublic(`/categoryproducts?category=${category}`)
-         console.log("products" , products)
-         return res.data
-      }
+  const [itemsPerPage , setItemsPerPage] = useState(10);
+  const [currentPage , setCurrentPage] = useState(0);
+  
+  
+  const [count , setCount] = useState(0);
+  
+  axiosPublic('/productsCount')
+  .then(res => {
+      console.log(res?.data?.count)
+      setCount(res?.data?.count)
   })
+  
+  
+  
+  const numberOfPages = Math.ceil(count / itemsPerPage);
+  const pages = [...Array(numberOfPages).keys()]
+
+  const handleItemsPerPage = (e) => {
+      const value = parseInt(e.target.value);
+      setItemsPerPage(value);
+      setCurrentPage(0);
+    };
+    const handlePrevPage = () => {
+      if (currentPage > 0) {
+        setCurrentPage(currentPage - 1);
+      }
+    };
+    const handleNextPage = () => {
+      if (currentPage < pages.length - 1) {
+        setCurrentPage(currentPage + 1);
+      }
+    };
+
+
+
+
+
+
+  
+    
+
+    const {data : datas = [] , isLoading } = useQuery({
+      queryKey  : ['products', currentPage, itemsPerPage , category],
+      queryFn : async() => {
+              const res = await axiosPublic(`/products?page=${currentPage}&size=${itemsPerPage}&category=${category}`)
+              console.log("data" , res.data);
+              return res.data
+      }
+})
+  // const {data : products = [] , isLoading} = useQuery({
+  //     queryKey : ['products' , category] , 
+  //     queryFn : async() => {
+  //        const res = await axiosPublic(`/categoryproducts?category=${category}`)
+  //        console.log("products" , products)
+  //        return res.data
+  //     }
+  // })
 
   
 
-  const filteredItems = getFilteredProducts(query, products);
+  const filteredItems = getFilteredProducts(query, datas);
 
     if(isLoading){
         return <Loading></Loading>
@@ -314,6 +370,43 @@ const ShopAllProducts = () => {
           
         }
       </div>
+
+
+
+       {/* pagination */}
+       <div className="text-center mt-6">
+          <button className="btn mr-2" onClick={handlePrevPage}>
+            Prev
+          </button>
+          {pages?.map((page) => (
+            <button
+              className={`${
+                currentPage === page
+                  ? "btn bg-orange-600 hover:text-black text-white"
+                  : undefined
+              } btn mr-2`}
+              key={page}
+              onClick={() => setCurrentPage(page)}
+            >
+              {page}
+            </button>
+          ))}
+          <button className="btn ml-2" onClick={handleNextPage}>
+            Next
+          </button>
+          <select
+            value={itemsPerPage}
+            onChange={handleItemsPerPage}
+            name=""
+            id=""
+            className="ml-2 border-2 py-[10px] px-3 rounded-lg"
+          >
+            
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       <Shipping></Shipping>
     </>
   );

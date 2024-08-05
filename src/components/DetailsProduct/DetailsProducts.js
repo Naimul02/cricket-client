@@ -17,14 +17,14 @@ import 'swiper/css/pagination';
 // import required modules
 import { Zoom, Navigation, Pagination } from 'swiper/modules';
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../hooks/useAxiosPublic/useAxiosPublic";
 import Loading from "../Loading/Loading";
 import useCart from "../../hooks/useCart/useCart";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const DetailsProducts = () => {
   const { user } = useContext(AuthContext);
   const [value, setValue] = useState(1);
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const {id} = useParams();
   const [ , refetch] = useCart();
   console.log("id" , id)
@@ -32,7 +32,7 @@ const DetailsProducts = () => {
   const {data : data , isLoading } = useQuery({
     queryKey : ['product'],
     queryFn : async()=> {
-          const res = await axiosPublic(`/especipicproduct/${id}`);
+          const res = await axiosSecure(`/especipicproduct/${id}`);
             console.log("res.data" , res.data)
 
           return res.data
@@ -71,7 +71,7 @@ const DetailsProducts = () => {
     // const totalPrice = info.quantity * info.recentPrice;
     // setTotal(totalPrice);
     // console.log("information : ", cartItem);
-    axiosPublic.post('/carts' , cartItem)
+    axiosSecure.post('/carts' , cartItem)
     .then(res => {
       console.log(res.data)
       if(res.data.insertedId){
@@ -85,16 +85,10 @@ const DetailsProducts = () => {
   };
 
   return (
-    // flex lg:flex-row flex-col addtocart
+    
     <>
       <div className="card card-side bg-base-100  lg:mx-[90px] lg:mt-4 flex lg:flex-row flex-col">
-        {/* <figure className="border border-solid-2 border-purple-600 rounded-none ">
-          <img
-            src={data?.img}
-            className="lg:w-[650px] lg:h-[650px] "
-            alt="Movie"
-          />
-        </figure> */}
+        
 
         <div>
         <Swiper
@@ -111,8 +105,8 @@ const DetailsProducts = () => {
         className="mySwiper"
       >
         <SwiperSlide className="lg:w-[650px] border border-solid-2 border-purple-600 rounded-none">
-          <div className="swiper-zoom-container border-solid-2 border-purple-600 rounded-none  lg:w-[650px]">
-            <img src={data?.img}  className="lg:w-[650px] lg:h-[550px] " />
+          <div className="swiper-zoom-container border-solid-2 border-purple-600 rounded-none  lg:w-full">
+            <img src={data?.img}  className="lg:w-full lg:h-full" />
           </div>
         </SwiperSlide>
         

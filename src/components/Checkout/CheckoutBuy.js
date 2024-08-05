@@ -7,12 +7,12 @@ import { Link, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import Loading from "../Loading/Loading";
-import useAxiosPublic from '../../hooks/useAxiosPublic/useAxiosPublic';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const CheckoutBuy = () => {
     const {user} = useContext(AuthContext)
     const {id} = useParams();
-    const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
 
     const {
         refetch,
@@ -21,7 +21,7 @@ const CheckoutBuy = () => {
       } = useQuery({
         queryKey: ["singleOrder", user?.email],
         queryFn: async () => {
-          const res = await axiosPublic(`buy/${id}?email=${user?.email}`);
+          const res = await axiosSecure(`buy/${id}?email=${user?.email}`);
           console.log("res.data vai re vai" , res.data)
           
           return res.data;
@@ -33,19 +33,29 @@ const CheckoutBuy = () => {
     const { register, handleSubmit } = useForm();
     const onSubmit = (data) => {
       console.log(data);
-      fetch("http://localhost:5000/confirmorder", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          toast.success("Your order has been confirmed");
-          refetch();
+      axiosSecure.post('/confirmorder' , data)
+      
+        .then((res) => {
+          console.log(res.data);
+          if(res.data.insertedId){
+            toast.success("Your order has been confirmed");
+            refetch();
+           }
+
         });
+    //   fetch("http://localhost:5000/confirmorder", {
+    //     method: "POST",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //     body: JSON.stringify(data),
+    //   })
+    //     .then((res) => res.json())
+    //     .then((data) => {
+    //       console.log(data);
+    //       toast.success("Your order has been confirmed");
+    //       refetch();
+    //     });
     };
 
     if (isLoading) {
