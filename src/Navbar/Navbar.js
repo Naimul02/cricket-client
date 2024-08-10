@@ -13,13 +13,15 @@ import toast from "react-hot-toast";
 import { AiOutlineHome } from "react-icons/ai";
 import "../App.css";
 import useCart from "../hooks/useCart/useCart";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
-  console.log("user" , user);
+  const axiosSecure = useAxiosSecure();
 
-  const [orders , refetch] = useCart();
-  console.log("carts : " , orders)
+  const [carts , refetch] = useCart();
+  // console.log("carts : " , orders)
 
   const handleLogOut = () => {
     logout()
@@ -32,15 +34,15 @@ const Navbar = () => {
   };
 
   const handleDelete = (order) => {
-    fetch(`http://localhost:5000/addtocart?id=${order._id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data);
+    axiosSecure.delete(`addtocart?id=${order._id}`)
+    .then(res => {
+      console.log(res.data);
+      if(res.data.deletedCount > 0){
         toast.success("Your product has been successfully deleted");
         refetch();
-      });
+
+      }
+    })
   };
 
   return (
@@ -99,7 +101,7 @@ const Navbar = () => {
           </ul>
         </div>
         <Link to="/" className="btn btn-ghost normal-case text-xl">
-          Sports Store
+          Cricket Store
         </Link>
 
         <div className="navbar-end lg:w-[331px]">
@@ -107,7 +109,7 @@ const Navbar = () => {
             <div className="dropdown dropdown-end lg:border-r-2 lg:border-slate-400 lg:pr-3 pr-6">
               <label tabIndex={0} className="hover:cursor-pointer">
                 <MdOutlineAccountCircle className="w-[28px] h-[28px] mx-[35%] " />
-                {user ? <p>{user.displayName}</p> : <p>My Account</p>}
+                {user ? <p>{user?.displayName ? user?.displayName : 'Unknown'}</p> : <p>My Account</p>}
               </label>
               <ul
                 tabIndex={0}
@@ -202,7 +204,7 @@ const Navbar = () => {
                 className="text-lg font-semibold text-white  hover:cursor-pointer"
                 htmlFor="my-drawer-4"
               >
-                {orders?.length}
+                {carts?.length}
               </label>
               <label htmlFor="my-drawer-4">
                 <AiOutlineShopping className="w-[28px] h-[28px] ml-1 text-orange-400  hover:cursor-pointer" />
@@ -232,8 +234,8 @@ const Navbar = () => {
                 <hr />
 
                 <div>
-                  {orders.length ? (
-                    orders?.map((order) => (
+                  {carts.length ? (
+                    carts?.map((order) => (
                       <div key={order?._id}>
                         <div className="flex py-3 justify-between">
                           <label

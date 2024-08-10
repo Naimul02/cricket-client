@@ -5,23 +5,13 @@ import Loading from "../Loading/Loading";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useCart from "../../hooks/useCart/useCart";
 
 const Orders = () => {
   const { user } = useContext(AuthContext);
   
   const axiosSecure  = useAxiosSecure();
-  const {
-    refetch,
-    isLoading,
-    data: orders = [],
-  } = useQuery({
-    queryKey: ["orders", user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`carts?email=${user?.email}`);
-      console.log("carts : " , res.data);
-      return res.data;
-},
-  });
+ const [carts , refetch , isLoading ] = useCart()
 
   const handleDelete = (order) => {
       axiosSecure.delete(`addtocart?id=${order._id}`)
@@ -39,11 +29,11 @@ const Orders = () => {
     return <Loading></Loading>;
   }
 
-    const sum = orders?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0);
+    const sum = carts?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0);
     
   return (
     <div>
-      {orders ? (
+      {carts ? (
         <h1 className="lg:mx-[104px]  mx-4 text-2xl text-green-600 font-semibold mt-3">
           Your Cart
         </h1>
@@ -51,8 +41,8 @@ const Orders = () => {
         <></>
       )}
       <div className="mt-4">
-        {orders.length ? (
-          orders.map((order) => (
+        {carts.length ? (
+          carts.map((order) => (
             <div className=" overflow-x-auto shadow-md sm:rounded-lg lg:mx-[104px]" key={order?.key}>
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <tbody>
@@ -108,10 +98,10 @@ const Orders = () => {
       </div>
 
       <div className="flex justify-end lg:mr-[17%] mt-2">
-     {orders?.length &&  <h2 className="text-lg font-semibold lg:mx-[104px]">Total : {sum}</h2>}
+     {carts?.length &&  <h2 className="text-lg font-semibold lg:mx-[104px]">Total : {sum}</h2>}
       </div>
 
-      {orders.length ? (
+      {carts.length ? (
         <div className="flex lg:mx-0 mx-2 lg:flex-row flex-col">
           <Link to="/checkout">
             <button className="btn bg-green-600 lg:ml-[104px] text-center mt-3 text-white lg:w-[300px] hover:bg-emerald-700 w-full ">

@@ -1,4 +1,4 @@
-import React from "react";
+import React , {useRef} from "react";
 import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -8,41 +8,36 @@ import { useContext } from "react";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 import Loading from "../Loading/Loading";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useCart from "../../hooks/useCart/useCart";
+import emailjs from '@emailjs/browser';
 
 const Checkout = () => {
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
-  const {
-    data: orders = [],
-    refetch,
-    isLoading,
-  } = useQuery({
-    queryKey: ["orders", user?.email],
-    queryFn: async () => {
-      axiosSecure(`/carts?email=${user?.email}`)
-      .then(res => {
-          console.log(res.data);
-          return res.data;
-      })
-      // const res = await fetch(
-      //   `http://localhost:5000/carts?email=${user?.email}`
-      // );
-      // const data = res.json();
-      // return data;
-    },
-  });
-  const sum = orders?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0)
+  const [carts , refetch , isLoading] = useCart();
+  const form = useRef();
+  console.log(form.current)
+  
+  const sum = carts?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0)
 
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
-    console.log(data);
-    axiosSecure.post('/confirmorder' , data)
+    console.log("data" , data);
+    const info = {
+      data,
+      carts
+    }
+    axiosSecure.post('/confirmorder' , info)
     .then(res => {
       console.log(res.data);
       if(res.data.insertedId){
 
         refetch();
         toast.success("Your order has been confirmed");
+
+
+
+         
       }
     })
     
@@ -54,8 +49,8 @@ const Checkout = () => {
 
   return (
     <div className="flex lg:flex-row flex-col lg:gap-16 lg:mx-[104px] lg:px-0 px-4 justify-between">
-      {orders.length ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
+      {carts.length ? (
+        <form ref={form} onSubmit={handleSubmit(onSubmit)}>
           <h1 className="text-2xl font-bold mt-10">
             Billing & Shipping
           </h1>
@@ -65,6 +60,16 @@ const Checkout = () => {
               {...register("name")}
               className="border border-solid border-red-600 block rounded lg:w-[619px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
               placeholder="Enter Your Name"
+              required
+            />
+          </div>
+          <div className="mt-2">
+            <label className="text-lg font-semibold">Email</label>
+            <input
+              {...register("email")}
+              className="border border-solid border-red-600 block rounded lg:w-[619px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
+              defaultValue={user?.email}
+              readOnly
               required
             />
           </div>
@@ -182,8 +187,8 @@ const Checkout = () => {
           Your Order
         </h1>
         <div>
-          {orders?.length ? (
-            orders.map((order) => (
+          {carts?.length ? (
+            carts.map((order) => (
               <div className=" overflow-x-auto shadow-md sm:rounded-lg lg:mx-[16px]">
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                   <tbody>

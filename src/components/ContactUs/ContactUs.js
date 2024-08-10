@@ -15,10 +15,7 @@ const ContactUs = () => {
       <div className="lg:px-[104px] pb-10 lg:mx-0 mx-6">
         <h1 className="text-3xl font-semibold py-5 text-center">Contact Us</h1>
         <p className="py-3 text-xl font-semibold">
-          Website :
-          <Link to="https://departmental-store-02.web.app">
-            Departmental Store
-          </Link>
+            Email : naimul39@gmail.com
         </p>
         <p className="text-xl font-semibold">Call us : 018********</p>
       </div>

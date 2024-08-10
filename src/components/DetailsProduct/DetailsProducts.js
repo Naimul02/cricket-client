@@ -20,6 +20,8 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../Loading/Loading";
 import useCart from "../../hooks/useCart/useCart";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import {useNavigate} from 'react-router-dom';
+import Review from "./Review/Review";
 
 const DetailsProducts = () => {
   const { user } = useContext(AuthContext);
@@ -27,7 +29,8 @@ const DetailsProducts = () => {
   const axiosSecure = useAxiosSecure();
   const {id} = useParams();
   const [ , refetch] = useCart();
-  console.log("id" , id)
+  const [disabled , setDisabled] = useState(false);
+  const navigate = useNavigate()
   
   const {data : data , isLoading } = useQuery({
     queryKey : ['product'],
@@ -76,7 +79,9 @@ const DetailsProducts = () => {
       console.log(res.data)
       if(res.data.insertedId){
         toast.success("add to cart successful");
-        refetch()
+        refetch();
+        setDisabled(true);
+        navigate('/orders')
       }
     })
     .catch((error) => {
@@ -87,7 +92,7 @@ const DetailsProducts = () => {
   return (
     
     <>
-      <div className="card card-side bg-base-100  lg:mx-[90px] lg:mt-4 flex lg:flex-row flex-col">
+      <div className="card card-side bg-base-100  lg:mx-[90px] lg:mt-10 flex lg:flex-row flex-col">
         
 
         <div>
@@ -102,10 +107,10 @@ const DetailsProducts = () => {
           clickable: true,
         }}
         modules={[Zoom, Navigation, Pagination]}
-        className="mySwiper"
+        className="mySwiper lg:w-[650px] lg:h-[550px]"
       >
-        <SwiperSlide className="lg:w-[650px] border border-solid-2 border-purple-600 rounded-none">
-          <div className="swiper-zoom-container border-solid-2 border-purple-600 rounded-none  lg:w-full">
+        <SwiperSlide className="lg:w-[650px] lg:h-[550px] border border-solid-2 border-purple-600 rounded-none">
+          <div className="swiper-zoom-container border-solid-2 border-purple-600 rounded-none  lg:w-full lg:h-full">
             <img src={data?.img}  className="lg:w-full lg:h-full" />
           </div>
         </SwiperSlide>
@@ -147,6 +152,14 @@ const DetailsProducts = () => {
               </div>
 
               {user ? (
+                disabled ? <button
+                className="btn hover:bg-orange-700 lg:w-[320px] w-[195px] bg-orange-600 text-white "
+                onClick={() => handleProduct()}disabled
+              >
+                Add To Cart
+              </button>
+              :
+
                 <button
                   className="btn hover:bg-orange-700 lg:w-[320px] w-[195px] bg-orange-600 text-white "
                   onClick={() => handleProduct()}
@@ -177,6 +190,10 @@ const DetailsProducts = () => {
           </div>
         </div>
       </div>
+
+
+      {/* Review */}
+      <Review id={id}></Review>
 
       <Shipping></Shipping>
     </>

@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       
       console.log('current user : ' , currentUser)
@@ -60,9 +60,7 @@ const AuthProvider = ({ children }) => {
               }
              
           })
-          .catch(error => {
-            console.error(error.message)
-          })
+         
       }
       else{
         localStorage.removeItem("access-token");
@@ -76,13 +74,13 @@ const AuthProvider = ({ children }) => {
     return () => {
      return unsubscribe();
     }
-  }, [ axiosPublic]);
+  }, [axiosPublic]);
 
   const authInfo = {
-    createUser,
-    profileUpdate,
-    loginUser,
     user,
+    createUser,
+    loginUser,
+    profileUpdate,
     logout,
     loading,
     setLoading,

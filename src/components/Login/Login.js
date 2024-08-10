@@ -11,6 +11,7 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const location = useLocation();
   console.log("location vai" , location);
+  const from = location.state?.from?.pathname || "/";
 
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ const Login = () => {
         const user = result.user;
         console.log(user);
         toast.success("Login successfully");
-        navigate(location?.state?.from?.pathname ||  "/");
+        navigate(from, { replace: true });
       })
       .catch((error) => {
         toast.error(error.message);
@@ -33,7 +34,7 @@ const Login = () => {
       const user = result.user;
       console.log(user);
       toast.success("Login successfully");
-      navigate(location?.state?.from?.pathname ||  "/");
+      navigate(location?.state?.from?.pathname ||  "/" , {replace : true});
     })
     .catch((error) => {
       toast.error(error.message);
@@ -76,14 +77,15 @@ const Login = () => {
             Are you new here ? please signup
           </Link>
 
-          <div className="max-w-[100px] mx-auto">
-        <FcGoogle className="text-3xl text-center hover:pointer"onClick={handleGoogleUser} />
-        </div>
 
           <button className="btn bg-green-600 text-white lg:w-[315px] w-full mt-2 hover:bg-green-700">
             Submit
           </button>
         </form>
+        
+        <div className="max-w-[300px] mt-3">
+        <FcGoogle className="text-3xl  hover:cursor-pointer mx-auto"onClick={handleGoogleUser} />
+        </div>
        
       </div>
 
