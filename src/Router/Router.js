@@ -12,6 +12,8 @@ import Signup from "../components/Signup/Signup";
 import Main from "../layout/Main";
 import PrivateRoute from "./PrivateRoute";
 import CheckoutBuy from "../components/Checkout/CheckoutBuy";
+import MyOrders from "../Dashboard/MyOrders";
+import DashboardLayout from "../layout/DashboardLayout";
 
 const router = createBrowserRouter([
   {
@@ -30,12 +32,7 @@ const router = createBrowserRouter([
         path: "/contactus",
         element: <ContactUs></ContactUs>,
       },
-      // {
-      //   path: "/especificproduct/:id",
-      //   element: <PrivateRoute><DetailsProducts></DetailsProducts></PrivateRoute>,
-      //   loader: async ({ params }) =>
-      //     fetch(`http://localhost:5000/especificproduct/${params.id}`),
-      // },
+      
       {
         path: "/especipicproduct/:id",
         element: <PrivateRoute><DetailsProducts></DetailsProducts></PrivateRoute>,
@@ -63,6 +60,21 @@ const router = createBrowserRouter([
       },
     ],
   },
+
+
+
+
+  // Dashboard
+  {
+      path : '/dashboard',
+      element : <DashboardLayout></DashboardLayout>,
+      children : [
+          {
+            path : '/dashboard/myOrders',
+            element : <MyOrders></MyOrders>
+        }
+      ]
+  }
 ]);
 
 export default router;

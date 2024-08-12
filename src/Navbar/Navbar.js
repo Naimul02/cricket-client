@@ -14,6 +14,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import "../App.css";
 import useCart from "../hooks/useCart/useCart";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { MdDashboardCustomize } from "react-icons/md";
 
 
 const Navbar = () => {
@@ -115,6 +116,15 @@ const Navbar = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
               >
+                <li>
+                  <Link to="/dashboard/myOrders"
+                    className="text-lg font-semibold"
+                    
+                  >
+                    <MdDashboardCustomize className="text-2xl font-semibold"/>
+                    Dashboard
+                  </Link>
+                </li>
                 <li>
                   <div
                     className="text-lg font-semibold"

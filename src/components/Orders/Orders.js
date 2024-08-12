@@ -98,7 +98,9 @@ const Orders = () => {
       </div>
 
       <div className="flex justify-end lg:mr-[17%] mt-2">
-     {carts?.length &&  <h2 className="text-lg font-semibold lg:mx-[104px]">Total : {sum}</h2>}
+     {
+     carts?.length &&  <h2 className="text-lg font-semibold lg:mx-[104px]">Total : {sum}</h2>
+     }
       </div>
 
       {carts.length ? (

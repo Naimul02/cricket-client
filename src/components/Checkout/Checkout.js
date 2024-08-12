@@ -16,29 +16,29 @@ const Checkout = () => {
   const axiosSecure = useAxiosSecure();
   const [carts , refetch , isLoading] = useCart();
   const form = useRef();
-  console.log(form.current)
+  // console.log("carts  vai vai : " , carts)
   
   const sum = carts?.reduce((accu , currentValue) => accu + currentValue.recentPrice * currentValue.quantity , 0)
 
+  
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
-    console.log("data" , data);
+    // console.log("data" , data);
     const info = {
+      email : user?.email,
       data,
-      carts
+      carts,
+      cartsId : carts?.map(cart => cart._id),
+      
     }
     axiosSecure.post('/confirmorder' , info)
     .then(res => {
-      console.log(res.data);
-      if(res.data.insertedId){
+      
+      if(res.data.result.insertedId){
 
-        refetch();
         toast.success("Your order has been confirmed");
-
-
-
-         
-      }
+        refetch();
+}
     })
     
   };
@@ -126,8 +126,18 @@ const Checkout = () => {
             <label className="text-lg font-semibold">Your Name</label>
             <input
               {...register("name")}
-              className="border border-solid border-red-600 block rounded lg:w-[297px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
+              className="border border-solid border-red-600 block rounded  w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
               placeholder="Enter Your Name"
+              required
+            />
+          </div>
+          <div className="mt-2">
+            <label className="text-lg font-semibold">Email</label>
+            <input
+              {...register("email")}
+              className="border border-solid border-red-600 block rounded lg:w-[619px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
+              defaultValue={user?.email}
+              readOnly
               required
             />
           </div>
@@ -237,9 +247,11 @@ const Checkout = () => {
             </div>
           )}
           
-          <div className="flex justify-end mr-[5%] mt-2">
+          {
+            carts?.length > 0 && <div className="flex justify-end mr-[5%] mt-2">
             <h2 className="text-lg font-semibold">Total : {sum}</h2>
           </div>
+          }
         </div>
       </div>
     </div>
