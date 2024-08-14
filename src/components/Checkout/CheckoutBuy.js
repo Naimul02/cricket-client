@@ -21,8 +21,8 @@ const CheckoutBuy = () => {
       } = useQuery({
         queryKey: ["singleOrder", user?.email],
         queryFn: async () => {
-          const res = await axiosSecure(`buy/${id}?email=${user?.email}`);
-          console.log("res.data vai re vai" , res.data)
+          const res = await axiosSecure.get(`buy/${id}?email=${user?.email}`);
+          // console.log("res.data vai re vai" , res.data)
           
           return res.data;
         },
@@ -32,11 +32,17 @@ const CheckoutBuy = () => {
 
     const { register, handleSubmit } = useForm();
     const onSubmit = (data) => {
-      console.log(data);
-      axiosSecure.post('/confirmorder' , data)
+      // console.log(data);
+      const info = {
+        email : user?.email,
+        data,
+       carts : [ singleOrder]
+      }
+      console.log("info : " , info);
+      axiosSecure.post('/confirmorderbyBuyButton' , info)
       
         .then((res) => {
-          console.log(res.data);
+          console.log("checkoutBuy" , res.data);
           if(res.data.insertedId){
             toast.success("Your order has been confirmed");
             refetch();
@@ -74,6 +80,17 @@ const CheckoutBuy = () => {
               {...register("name")}
               className="border border-solid border-red-600 block rounded lg:w-[619px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
               placeholder="Enter Your Name"
+              defaultValue={user?.displayName}
+              required
+            />
+          </div>
+          <div className="mt-3">
+            <label className="text-lg font-semibold">Your Name</label>
+            <input
+              {...register("email")}
+              className="border border-solid border-red-600 block rounded lg:w-[619px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
+              placeholder="Enter Your Email"
+              defaultValue={user?.email}
               required
             />
           </div>
@@ -119,7 +136,7 @@ const CheckoutBuy = () => {
             ></textarea>
           </div>
 
-          <button className="btn bg-green-600 text-white w-full hover:bg-red-600 lg:w-[300px]  mt-2">
+          <button className="btn bg-green-600 text-white w-full hover:bg-green-700 lg:w-[300px]  mt-2">
             Place Order
           </button>
         </form>
@@ -132,6 +149,17 @@ const CheckoutBuy = () => {
               {...register("name")}
               className="border border-solid border-red-600 block rounded lg:w-[297px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
               placeholder="Enter Your Name"
+              defaultValue={user?.displayName}
+              required
+            />
+          </div>
+          <div className="mt-3">
+            <label className="text-lg font-semibold">Your Email</label>
+            <input
+              {...register("email")}
+              className="border border-solid border-red-600 block rounded lg:w-[297px] w-full h-[40px] pl-3 lg:text-lg text-base font-semibold"
+              placeholder="Enter Your Email"
+              defaultValue={user?.email}
               required
             />
           </div>
@@ -178,7 +206,7 @@ const CheckoutBuy = () => {
           </div>
 
           <button
-            className="btn bg-green-600 text-white w-full hover:bg-purple-600 lg:w-[300px] mt-2"
+            className="btn bg-green-600 text-white w-full hover:bg-green-700 lg:w-[300px] mt-2"
             disabled
           >
             Place Order
@@ -200,7 +228,7 @@ const CheckoutBuy = () => {
                       <td className="w-[96px] h-[96px] p-4 rounded-full">
                         <div className="lg:w-[64px] w-[64px] lg:h-[64px] h-[64px]">
                           <img
-                            src={singleOrder?.img}
+                            src={singleOrder?.image}
                             alt="Apple Watch"
                             className="rounded-full lg:w-[64px] w-[64px] lg:h-[64px] h-[64px] "
                           />
@@ -208,7 +236,7 @@ const CheckoutBuy = () => {
                       </td>
 
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white w-[160px] ">
-                        <p className="w-[160px] ">{singleOrder?.product_name}</p>
+                        <p className="w-[160px] ">{singleOrder?.productName}</p>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
@@ -216,10 +244,10 @@ const CheckoutBuy = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {singleOrder?.recent_price}
+                        {singleOrder?.recentPrice}
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                        {parseInt(singleOrder?.recent_price) * 1}
+                        {parseInt(singleOrder?.recentPrice) * 1}
                       </td>
                     </tr>
                   </tbody>
