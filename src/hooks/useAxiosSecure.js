@@ -6,7 +6,7 @@ import {  useNavigate } from "react-router-dom";
 
 
  const axiosSecure = axios.create({
-        baseURL : 'http://localhost:5000'
+        baseURL : 'https://cricket-shop-server.vercel.app'
 })
 const useAxiosSecure = () => {
     const navigate = useNavigate();

@@ -5,12 +5,12 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBcWZeiL-ROv6az5wdNxuIpMP3UUS94ml8",
-  authDomain: "cricketshop-e69fe.firebaseapp.com",
-  projectId: "cricketshop-e69fe",
-  storageBucket: "cricketshop-e69fe.appspot.com",
-  messagingSenderId: "790483220279",
-  appId: "1:790483220279:web:54367a61dea39ccda78cb2",
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTHDOMAIN,
+  projectId: import.meta.env.VITE_PROJECTID,
+  storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+  appId: import.meta.env.VITE_APPID,
 };
 
 // Initialize Firebase

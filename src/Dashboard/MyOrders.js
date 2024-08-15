@@ -74,14 +74,14 @@ const MyOrders = () => {
                       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                         {order?.recentPrice * order?.quantity}
                       </td>
-                      <td className="px-6 py-4">
+                      {/* <td className="px-6 py-4">
                         <p
                           className="font-medium text-red-600 dark:text-red-500 hover:underline hover:cursor-pointer"
                           onClick={() => handleDelete(order?._id)}
                         >
                           Cancel Order
                         </p>
-                      </td>
+                      </td> */}
                     </tr>
                     
                   </tbody>

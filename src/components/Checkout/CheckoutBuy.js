@@ -49,7 +49,7 @@ const CheckoutBuy = () => {
            }
 
         });
-    //   fetch("http://localhost:5000/confirmorder", {
+    //   fetch("https://cricket-shop-server.vercel.app/confirmorder", {
     //     method: "POST",
     //     headers: {
     //       "content-type": "application/json",
