@@ -10,7 +10,7 @@ const ShopProductCard = ({filteredItems , data }) => {
 
 
     return (
-        <div className="grid lg:grid-cols-3 gap-3 lg:mt-0 mt-4">
+        <div className="grid lg:grid-cols-4 gap-3 lg:mt-0 mt-4">
             
          
            {filteredItems.length > 0 ?  filteredItems?.map((product) => (

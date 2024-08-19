@@ -92,7 +92,7 @@ const DetailsProducts = () => {
   return (
     
     <>
-      <div className="card card-side bg-base-100  lg:mx-[90px] lg:mt-10 flex lg:flex-row flex-col">
+      <div className="card card-side bg-base-100  lg:mx-[90px] mt-10 flex lg:flex-row flex-col">
         
 
         <div>

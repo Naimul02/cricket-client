@@ -78,7 +78,7 @@ const Review = ({id}) => {
 
 
 
-            <div className="flex gap-16 lg:px-16 flex-col md:flex-row mt-10">
+            <div className="flex gap-16 lg:px-16 flex-col md:flex-row mt-10 mx-3 lg:mx-0">
                 {/* reviews */}
                   
                 <div className="w-full lg:w-[45%]">

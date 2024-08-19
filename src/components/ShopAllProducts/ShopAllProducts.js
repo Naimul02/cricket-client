@@ -45,7 +45,7 @@ const ShopAllProducts = () => {
 
   // pagination
   
-  const [itemsPerPage , setItemsPerPage] = useState(12);
+  const [itemsPerPage , setItemsPerPage] = useState(50);
   const [currentPage , setCurrentPage] = useState(0);
   
   
@@ -119,7 +119,7 @@ const ShopAllProducts = () => {
           className="lg:h-[490px] objectFit w-full"
         />
       </div>
-      <div className="lg:mx-[104px]  lg:flex hidden justify-between  lg:flex-row flex-col ">
+      <div className="lg:mx-[50px]  lg:flex hidden justify-between  lg:flex-row flex-col ">
         <h2 className="lg:text-3xl text-lg font-bold mt-6">Products </h2>
         <div className="navbar-center  flex mt-3">
           <ul className="menu menu-horizontal flex ">
@@ -138,7 +138,7 @@ const ShopAllProducts = () => {
         </div>
       </div>
 
-      <div className="flex lg:mx-[104px] mt-6 lg:flex-row flex-col">
+      <div className="flex lg:mx-[50px] mt-6 lg:flex-row flex-col">
         <div className="lg:w-[275px] bg-base-200 lg:h-[458px] h-[95px] lg:mr-3 rounded lg:block sticky top-[-1px]">
           <div className="p-4">
             <div className="flex justify-between">
@@ -399,7 +399,7 @@ const ShopAllProducts = () => {
             onChange={handleItemsPerPage}
             name=""
             id=""
-            className="ml-2 border-2 py-[10px] px-3 rounded-lg"
+            className="ml-2 border-2 py-[10px] px-3 rounded-lg lg:inline hidden"
           >
             
             <option value="10">10</option>

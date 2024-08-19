@@ -34,10 +34,12 @@ const MyOrders = () => {
   };
 
     if(isLoading){
-        return <Loading></Loading>
+        return <div className="flex justify-center items-center h-screen">
+            <span className="loading loading-dots w-16 h-16  text-red-500"></span>
+        </div>
     }
     return (
-        <div className="px-10 mt-4">
+        <div className="px-2 lg:px-10 mt-4">
             {myOrders?.length > 0 && <h2 className="text-2xl font-bold mb-3">My orders</h2>}
 
 
